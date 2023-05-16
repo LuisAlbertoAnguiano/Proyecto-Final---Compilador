@@ -1,0 +1,5 @@
+ID   Usuario     Contraseña
+ 1    Admin      super@admin001
+ 2    Supervisor  SpvR@sp-63789
+ 3    Interno1    Itrn@01-12543
+ 4    Interno2    Itrn@02-67832
