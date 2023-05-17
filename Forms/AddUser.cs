@@ -23,31 +23,37 @@ namespace Compilador
 
         private void bt_Registrar_MouseClick(object sender, MouseEventArgs e)
         {
-            password = tbx_password.Text;
-            Enpassword = Encriptacion.GetSHA256(password);
-
-            conexionDB.conectar.Close();
-            conexionDB.conectar.Open();
-
-            SqlCommand comando = new SqlCommand("INSERT INTO Usuarios (ID_Usuario, Nombre_Empleado, Ape_P, Ape_M, Nombre_Usuario, Contraseña, Correo, Telefono) VALUES(@id, @nombre, @apeP, @apeM, @usuario, @contraseña, @correo, @telefono)", conexionDB.conectar);
-            comando.Parameters.AddWithValue("@id", tbx_ID.Text);
-            comando.Parameters.AddWithValue("@nombre", tbx_Nombre.Text);
-            comando.Parameters.AddWithValue("@apeP", tbx_ApeP.Text);
-            comando.Parameters.AddWithValue("@apeM", tbx_ApeM.Text);
-            comando.Parameters.AddWithValue("@usuario", tbx_usuario.Text);
-            comando.Parameters.AddWithValue("@contraseña", Enpassword);
-            comando.Parameters.AddWithValue("@correo", tbx_Correo.Text);
-            comando.Parameters.AddWithValue("@telefono", tbx_telefono.Text);
-
-            try 
-              { 
-                comando.ExecuteNonQuery();
-                MessageBox.Show("Usuario registrado exitosamente");
-              }
-            catch 
+            if(tbx_ID.Text != "")
               {
-                MessageBox.Show("Datos no validos");
-              }
+                password = tbx_password.Text;
+                Enpassword = Encriptacion.GetSHA256(password);
+
+                conexionDB.conectar.Close();
+                conexionDB.conectar.Open();
+
+                SqlCommand comando = new SqlCommand("INSERT INTO Usuarios (ID_Usuario, Nombre_Empleado, Ape_P, Ape_M, Nombre_Usuario, Contraseña, Correo, Telefono) VALUES(@id, @nombre, @apeP, @apeM, @usuario, @contraseña, @correo, @telefono)", conexionDB.conectar);
+                comando.Parameters.AddWithValue("@id", tbx_ID.Text);
+                comando.Parameters.AddWithValue("@nombre", tbx_Nombre.Text);
+                comando.Parameters.AddWithValue("@apeP", tbx_ApeP.Text);
+                comando.Parameters.AddWithValue("@apeM", tbx_ApeM.Text);
+                comando.Parameters.AddWithValue("@usuario", tbx_usuario.Text);
+                comando.Parameters.AddWithValue("@contraseña", Enpassword);
+                comando.Parameters.AddWithValue("@correo", tbx_Correo.Text);
+                comando.Parameters.AddWithValue("@telefono", tbx_telefono.Text);
+
+                try
+                {
+                    comando.ExecuteNonQuery();
+                    MessageBox.Show("Usuario registrado exitosamente");
+                    this.Close();
+                }
+                catch
+                {
+                    MessageBox.Show("Datos no validos");
+                }
+            }
+            else { MessageBox.Show("Datos no validos"); }
+                    
             
         }
 
@@ -68,8 +74,8 @@ namespace Compilador
 
         private void AddUser_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Interfaz interfaz = new Interfaz();
-            interfaz.Show();
+            Login login = new Login();
+            login.Show();
         }
     }
 }
