@@ -20,21 +20,25 @@ namespace Compilador
             dialogoAbrirArchivo = new OpenFileDialog();
             //picCargarArchivo.Image = Image.FromFile(@"..\..\img\upload.png");
             //picCompilar.Image = Image.FromFile(@"..\..\img\compile.png");
-            LeerMatrizEstados("matrizEstados.csv");
-            LeerPalabrasReservadas("palabrasReservadas.csv");
+            LeerMatrizEstados("matrizEstados.txt");
+            LeerPalabrasReservadas("palabrasReservadas.txt");
             for (var i = 0; i <= VectorPalabrasReservadas.Length - 1; i++)
                 P_reservadas.Items.Add(VectorPalabrasReservadas[i] + "");
         }
 
         public void LeerPalabrasReservadas(string archivo)
         {
-            string renglon;
-            StreamReader lector = new StreamReader(archivo);
-            renglon = lector.ReadLine();
-            
-            VectorPalabrasReservadas = renglon.Split();
+            try 
+              {
+                string renglon;
+                StreamReader lector = new StreamReader(archivo);
+                renglon = lector.ReadLine();
 
-            lector.Close();
+                VectorPalabrasReservadas = renglon.Split();
+
+                lector.Close();
+              } 
+            catch { }         
         }
 
         /// This is equivalent to Mid Function in VB
@@ -56,36 +60,40 @@ namespace Compilador
 
         private void BuscaTokens()
           {
-            // Procedimiento para agregar los tokens
-            Estado = 0;
-            Token = "";
-            Posicion = 1;
-            // Len regresa la cantidad de caracteres de una variable de texto
-            // Mid regresa un caracter de una variable de texto
-            while (Posicion <= wlinea.Length)
-            {
-                Caracter = Mid(wlinea, Posicion, 1);
-                CalcularColumna(); // Calcula la columna que le corresponde al caracter
-                Estado = Int32.Parse(Matriz[Estado, columna]); // 
-                if ((Estado >= 100))
-                {
-                    if (Token.Length >= 0)
-                        ReconocerToken();
-                    Estado = 0;
-                    Token = "";
-                    Salida_txt.Items.Add(Token); // Agregar en el listbox de salida los tokens
-                }
-                else if ((Estado != 0))
-                    Token = Token + Caracter;
-                Posicion = Posicion + 1;
-            }
-            if (Token.Length > 0)
+            try
               {
-                Caracter = " ";
-                CalcularColumna();
-                Estado = Int32.Parse(Matriz[Estado, columna]);
-                ReconocerToken();
-              }
+                // Procedimiento para agregar los tokens
+                Estado = 0;
+                Token = "";
+                Posicion = 1;
+                // Len regresa la cantidad de caracteres de una variable de texto
+                // Mid regresa un caracter de una variable de texto
+                while (Posicion <= wlinea.Length)
+                  {
+                    Caracter = Mid(wlinea, Posicion, 1);
+                    CalcularColumna(); // Calcula la columna que le corresponde al caracter
+                    Estado = Int32.Parse(Matriz[Estado, columna]); // 
+                    if ((Estado >= 100))
+                      {
+                        if (Token.Length >= 0)
+                            ReconocerToken();
+                        Estado = 0;
+                        Token = "";
+                        Salida_txt.Items.Add(Token); // Agregar en el listbox de salida los tokens
+                      }
+                    else if ((Estado != 0))
+                        Token = Token + Caracter;
+                    Posicion = Posicion + 1;
+                  }
+                if (Token.Length > 0)
+                  {
+                    Caracter = " ";
+                    CalcularColumna();
+                    Estado = Int32.Parse(Matriz[Estado, columna]);
+                    ReconocerToken();
+                  }
+            }
+            catch { }           
           }
 
         private void Buscapreservadas()
@@ -429,19 +437,27 @@ namespace Compilador
 
         private void btnExportar_Click(object sender, EventArgs e)
           {
-            SaveFileDialog dialogoGuardar = new SaveFileDialog();
-               
-            string archivo = dialogoGuardar.FileName;
-
-
-            StreamWriter sw = new StreamWriter(archivo);
-
-            foreach (var item in Salida_txt.Items)
+            try 
               {
-                if (item.ToString() != "")
-                    sw.WriteLine(item.ToString());
+                SaveFileDialog dialogoGuardar = new SaveFileDialog();
+
+                string archivo = dialogoGuardar.FileName;
+
+
+                StreamWriter sw = new StreamWriter(archivo);
+
+                foreach (var item in Salida_txt.Items)
+                  {
+                    if (item.ToString() != "")
+                        sw.WriteLine(item.ToString());
+                  }
+                sw.Close();
+              } 
+            catch 
+              {
+                MessageBox.Show("El archivo no es valido para exportar");
               }
-            sw.Close();
+            
           }
 
     }
